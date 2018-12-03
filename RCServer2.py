@@ -19,8 +19,8 @@ import sys
 import logging
 from queue import Queue
 
-server_address_data = ('192.168.1.85',5001)
-server_address_camera = ('192.168.1.85',5002)
+server_address_data = ('10.66.22.111',4597)
+server_address_camera = ('10.66.22.111',4579)
 miny=0
 maxy=0
 speed = 0
@@ -79,11 +79,11 @@ def cameraThread(sock):
     cap = configureCamera(320,240,30)  
     ret = True
     while ret:
-        ret, frame = cap.read()
-        data, address = sock.recvfrom(4096)
+        data, address = sock.recvfrom(5000)
         data_decoded = data.decode()
         viewer = protocol(data_decoded)
         if (viewer.isAuthorizedtoView()):
+            ret, frame = cap.read()
             data = cv2.imencode('.jpg', frame)[1].tostring()
             size = str(sys.getsizeof(data))
             sock.sendto(data, address)
@@ -92,13 +92,17 @@ def cameraThread(sock):
     release(cap)
 
 def dataThread(sock):
+
     acc = 15.63
     #IO.changeDutyCycle((15, 15))
     while 1:
         data, addr = sock.recvfrom(1024)
+        #print(data)
         data_decoded = data.decode()
         controller = protocol(data_decoded)   
+        #print(data_decoded)
         if (controller.isAuthorizedToControl()):
+            #print("hi")
             print(controller.getControl())
             #IO.changeDutyCycle(p1.getControl)
         else:
