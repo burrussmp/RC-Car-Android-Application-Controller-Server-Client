@@ -37,11 +37,11 @@ def changeDutyCycle(dc):
     global steering, acceleration
     if (steering != dc[0]):
         steering = dc[0]
-        print(steering)
+        #print(steering)
         pi.hardware_PWM(19,freq,int(dc[0]*10000))
     if (acceleration != dc[1]):
         acceleration = dc[1]
-        print(acceleration)
+        #print(acceleration)
         pi.hardware_PWM(18,freq,int(dc[1]*10000))     
 
 # cleanGPIO()
